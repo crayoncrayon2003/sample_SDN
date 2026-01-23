@@ -401,23 +401,16 @@ docker rmi $(docker images -q 'sample1_vlan-*')
 ```
 
 ### 確認
-
+#### コンテナが残っていないか
 ```bash
-# コンテナが残っていないか
 docker ps -a | grep -E 'h1|h2|h3|ovs'
+```
 
-# イメージが残っていないか
+#### イメージが残っていないか
+```bash
 docker images | grep sample1_vlan
 ```
 
 すべて空であれば完全にクリーンアップできています。
 
 ---
-
-## 次ステップ（予告）
-
-* OpenFlow で VLAN tag を flow で制御
-* ovs-vsctl 設定の完全排除
-* Ryu / ONOS 連携
-
-👉 この手順は **そのまま OpenFlow 編の前段** になります。
