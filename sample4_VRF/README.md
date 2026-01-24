@@ -1,8 +1,8 @@
 ## 前提構成（完成形イメージ）
 ```
-[コンテナ名 h1 | veth-h1 ] ── [ veth-h1-ovs1                 veth-h4-ovs1] ── [ veth-h4 | コンテナ名 h4]
-                                [               コンテナ名 OVS             ]
-[コンテナ名 h2 | veth-h2 ] ── [ veth-h2-ovs1                 veth-h3-ovs1] ── [ veth-h3 | コンテナ名 h3]
+[コンテナ名 h1 | veth-h1 ] ── [ veth-h1-ovs1                 veth-h4-ovs1 ] ── [ veth-h4 | コンテナ名 h4]
+                             [               コンテナ名 OVS               ]
+[コンテナ名 h2 | veth-h2 ] ── [ veth-h2-ovs1                 veth-h3-ovs1 ] ── [ veth-h3 | コンテナ名 h3]
 ```
 
 * h1 と OVS の間は、 veth-h1 と veth-h1-ovs の1本で接続
