@@ -88,7 +88,7 @@ sudo nsenter -t $pid_ovs -n ip link set veth-h3-1 netns $pid_h3
 sudo nsenter -t $pid_ovs -n ip link set veth-h3-2 netns $pid_h3
 ```
 
-# Step5 : OVS 側 bond 作成（LACPなし）
+# Step5 : OVS 側 bond 作成（LACPあり）
 ```bash
 docker exec ovs ovs-vsctl add-bond br0 bond0 veth-h3-ovs1 veth-h3-ovs2 bond_mode=balance-slb lacp=active
 

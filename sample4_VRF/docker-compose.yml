@@ -1,0 +1,98 @@
+version: "3.9"
+
+services:
+  ovs:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get update && \
+            apt-get install -y openvswitch-switch iproute2 iputils-ping && \
+            rm -rf /var/lib/apt/lists/*
+
+        RUN echo '#!/bin/bash\n\
+        set -e\n\
+        mkdir -p /var/run/openvswitch\n\
+        if [ ! -f /etc/openvswitch/conf.db ]; then\n\
+          ovsdb-tool create /etc/openvswitch/conf.db /usr/share/openvswitch/vswitch.ovsschema\n\
+        fi\n\
+        ovsdb-server --remote=punix:/var/run/openvswitch/db.sock \\\n\
+                     --remote=db:Open_vSwitch,Open_vSwitch,manager_options \\\n\
+                     --pidfile --detach\n\
+        ovs-vsctl --no-wait init || true\n\
+        ovs-vswitchd --pidfile --detach --log-file\n\
+        sleep 2\n\
+        ovs-vsctl add-br br0 -- set Bridge br0 datapath_type=netdev\n\
+        echo "OVS started successfully"\n\
+        ovs-vsctl show\n\
+        exec sleep infinity\n\
+        ' > /start-ovs.sh && chmod +x /start-ovs.sh
+
+    container_name: ovs
+    privileged: true
+    network_mode: none
+    command: /start-ovs.sh
+
+  h1:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get update && \
+            apt-get install -y iproute2 iputils-ping kmod && \
+            rm -rf /var/lib/apt/lists/*
+    container_name: h1
+    network_mode: none
+    mem_limit: 64m
+    cpus: "0.1"
+    cap_add:
+      - NET_ADMIN
+    command: sleep infinity
+
+  h2:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get update && \
+            apt-get install -y iproute2 iputils-ping kmod && \
+            rm -rf /var/lib/apt/lists/*
+    container_name: h2
+    network_mode: none
+    mem_limit: 64m
+    cpus: "0.1"
+    cap_add:
+      - NET_ADMIN
+    command: sleep infinity
+
+  h3:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get update && \
+            apt-get install -y iproute2 iputils-ping kmod && \
+            rm -rf /var/lib/apt/lists/*
+    container_name: h3
+    network_mode: none
+    mem_limit: 64m
+    cpus: "0.1"
+    cap_add:
+      - NET_ADMIN
+    command: sleep infinity
+
+  h4:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get update && \
+            apt-get install -y iproute2 iputils-ping kmod && \
+            rm -rf /var/lib/apt/lists/*
+    container_name: h4
+    network_mode: none
+    mem_limit: 64m
+    cpus: "0.1"
+    cap_add:
+      - NET_ADMIN
+    command: sleep infinity
