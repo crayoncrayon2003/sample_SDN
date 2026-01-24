@@ -95,7 +95,7 @@ docker exec ovs ip link add veth-h2 type veth peer name veth-h2-ovs
 docker exec ovs ip link add veth-h3 type veth peer name veth-h3-ovs
 ```
 
-### OVS側のvethをUPにする（重要）
+### OVS側のvethをUPにする
 
 ```bash
 docker exec ovs ip link set veth-h1-ovs up
