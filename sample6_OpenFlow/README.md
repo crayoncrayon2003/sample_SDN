@@ -17,13 +17,13 @@
 │ Host1│ │Host2 │ │Host3 │
 │VLAN10│ │VLAN20│ │Bond  │
 └──────┘ └──────┘ └──────┘
-
 ```
 
-
 # Step0 : 起動
+
 WSL2ではコンテナ内から直接カーネルモジュールをロードできません。
 代わりに、ホストのWSL2カーネルでモジュールをロードする必要があります。必要なモジュールを入れます。
+
 ```bash
 # WSL2のホスト側で実行
 sudo modprobe bonding
@@ -34,13 +34,14 @@ lsmod | grep -E 'bonding|8021q'
 ```
 
 # Step1 : 起動
+
 ```bash
 docker compose up -d
 docker ps
 ```
 
-
 # Step2 : Controllerとの接続設定
+
 ```bash
 PID_OVS=$(docker inspect -f '{{.State.Pid}}' ovs)
 PID_CTRL=$(docker inspect -f '{{.State.Pid}}' controller)
@@ -85,6 +86,7 @@ docker exec ovs ovs-vsctl show
 ```
 
 # Step3 : ホストの接続設定
+
 ```bash
 # OVSでvethペアを作成
 docker exec ovs ip link add veth-h1 type veth peer name veth-h1-ovs
@@ -160,6 +162,7 @@ docker exec host3 ip addr show
 ```
 
 # Step4 : OpenFlow動作確認
+
 ```bash
 # OpenFlowコントローラの接続確認
 docker exec ovs ovs-vsctl show
@@ -172,6 +175,7 @@ docker logs controller | tail -20
 ```
 
 # Step5 : VLAN動作確認
+
 ```bash
 # まず、ポート番号を確認
 docker exec ovs ovs-ofctl -O OpenFlow13 show br0
@@ -206,6 +210,7 @@ docker logs controller | grep "packet in" | tail -20
 ```
 
 # Step6 :  リンクアグリゲーション確認
+
 ```bash
 # Host3のボンディング状態確認
 docker exec host3 cat /proc/net/bonding/bond0
@@ -243,6 +248,7 @@ docker logs controller | grep "01:80:c2:00:00:02" | tail -10
 ```
 
 # Step7 :  VRRP動作確認
+
 ```bash
 # Router1の状態確認（MASTERでVIP保持）
 docker exec router1 ip addr show eth0
@@ -295,8 +301,8 @@ docker logs router1 | grep -i "entering master state" | tail -3
 docker logs router2 | grep -i "entering backup state" | tail -3
 ```
 
-
 # Step8 :  OpenFlowでVRRPトラフィック制御
+
 ```bash
 # 現在のフローエントリを確認
 docker exec ovs ovs-ofctl -O OpenFlow13 dump-flows br0
@@ -333,10 +339,9 @@ echo "Router2 VIP確認..."
 docker exec router2 ip addr show eth0 | grep 192.168.100.254 && echo "Router2: MASTER (VIP保持)" || echo "Router2: BACKUP"
 ```
 
-
-
 # Step9 :  環境のクリーンアップ
+
 ```bash
-docker-compose down
+docker compose down
 sudo rm -f /var/run/netns/*
 ```
